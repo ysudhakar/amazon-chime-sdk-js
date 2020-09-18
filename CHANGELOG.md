@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change error to warn for logging Cloudwatch errors
 - Update README with use case to handle `realtimeSubscribeToVolumeIndicator` updates efficiently
 - Change error messaging for getUserMedia error
+- Remove unnecessary startAudioPreview in meeting demo
+>>>>>>> Remove unnecessary startAudioPreview in meeting demo
 
 ### Removed
 
