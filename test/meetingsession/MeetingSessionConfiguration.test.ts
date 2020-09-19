@@ -1,4 +1,4 @@
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2019-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 import * as chai from 'chai';
@@ -65,6 +65,68 @@ describe('MeetingSessionConfiguration', () => {
           Attendee: {
             AttendeeId: 'attendee-id',
             JoinToken: 'join-token',
+          },
+        }
+      );
+      expect(configuration.meetingId).to.eq('meeting-id');
+      expect(configuration.urls.audioHostURL).to.eq('audio-host-url');
+      expect(configuration.urls.screenDataURL).to.eq('screen-data-url');
+      expect(configuration.urls.screenSharingURL).to.eq('screen-sharing-url');
+      expect(configuration.urls.screenViewingURL).to.eq('screen-viewing-url');
+      expect(configuration.urls.signalingURL).to.eq('signaling-url');
+      expect(configuration.urls.turnControlURL).to.eq('turn-control-url');
+      expect(configuration.credentials.attendeeId).to.eq('attendee-id');
+      expect(configuration.credentials.joinToken).to.eq('join-token');
+    });
+
+    it('can take a CreateMeeting and CreateAttendee response object using JAVA SDK', () => {
+      const configuration = new MeetingSessionConfiguration(
+        {
+          meetingid: 'meeting-id',
+          mediaplacement: {
+            audiohosturl: 'audio-host-url',
+            screendataurl: 'screen-data-url',
+            screensharingurl: 'screen-sharing-url',
+            screenviewingurl: 'screen-viewing-url',
+            signalingurl: 'signaling-url',
+            turncontrolurl: 'turn-control-url',
+          },
+        },
+        {
+          attendeeid: 'attendee-id',
+          jointoken: 'join-token',
+        }
+      );
+      expect(configuration.meetingId).to.eq('meeting-id');
+      expect(configuration.urls.audioHostURL).to.eq('audio-host-url');
+      expect(configuration.urls.screenDataURL).to.eq('screen-data-url');
+      expect(configuration.urls.screenSharingURL).to.eq('screen-sharing-url');
+      expect(configuration.urls.screenViewingURL).to.eq('screen-viewing-url');
+      expect(configuration.urls.signalingURL).to.eq('signaling-url');
+      expect(configuration.urls.turnControlURL).to.eq('turn-control-url');
+      expect(configuration.credentials.attendeeId).to.eq('attendee-id');
+      expect(configuration.credentials.joinToken).to.eq('join-token');
+    });
+
+    it('can take a CreateMeeting and CreateAttendee response object root-level values using JAVA SDK', () => {
+      const configuration = new MeetingSessionConfiguration(
+        {
+          meeting: {
+            meetingid: 'meeting-id',
+            mediaplacement: {
+              audiohosturl: 'audio-host-url',
+              screendataurl: 'screen-data-url',
+              screensharingurl: 'screen-sharing-url',
+              screenviewingurl: 'screen-viewing-url',
+              signalingurl: 'signaling-url',
+              turncontrolurl: 'turn-control-url',
+            },
+          },
+        },
+        {
+          attendee: {
+            attendeeid: 'attendee-id',
+            jointoken: 'join-token',
           },
         }
       );

@@ -138,27 +138,35 @@ export default class MeetingSessionConfiguration {
    * ```
    */
   constructor(createMeetingResponse?: any, createAttendeeResponse?: any) { // eslint-disable-line
+    if (createAttendeeResponse) {
+      createAttendeeResponse = this.convertMapToObject(
+        this.toLowerCasePropertyNames(createAttendeeResponse)
+      );
+    }
     if (createMeetingResponse) {
-      if (createMeetingResponse.Meeting) {
-        createMeetingResponse = createMeetingResponse.Meeting;
+      createMeetingResponse = this.convertMapToObject(
+        this.toLowerCasePropertyNames(createMeetingResponse)
+      );
+      if (createMeetingResponse.meeting) {
+        createMeetingResponse = createMeetingResponse.meeting;
       }
-      this.meetingId = createMeetingResponse.MeetingId;
+      this.meetingId = createMeetingResponse.meetingid;
       this.urls = new MeetingSessionURLs();
-      this.urls.audioHostURL = createMeetingResponse.MediaPlacement.AudioHostUrl;
-      this.urls.screenDataURL = createMeetingResponse.MediaPlacement.ScreenDataUrl;
-      this.urls.screenSharingURL = createMeetingResponse.MediaPlacement.ScreenSharingUrl;
-      this.urls.screenViewingURL = createMeetingResponse.MediaPlacement.ScreenViewingUrl;
-      this.urls.signalingURL = createMeetingResponse.MediaPlacement.SignalingUrl;
-      this.urls.turnControlURL = createMeetingResponse.MediaPlacement.TurnControlUrl;
+      this.urls.audioHostURL = createMeetingResponse.mediaplacement.audiohosturl;
+      this.urls.screenDataURL = createMeetingResponse.mediaplacement.screendataurl;
+      this.urls.screenSharingURL = createMeetingResponse.mediaplacement.screensharingurl;
+      this.urls.screenViewingURL = createMeetingResponse.mediaplacement.screenviewingurl;
+      this.urls.signalingURL = createMeetingResponse.mediaplacement.signalingurl;
+      this.urls.turnControlURL = createMeetingResponse.mediaplacement.turncontrolurl;
     }
     if (createAttendeeResponse) {
-      if (createAttendeeResponse.Attendee) {
-        createAttendeeResponse = createAttendeeResponse.Attendee;
+      if (createAttendeeResponse.attendee) {
+        createAttendeeResponse = createAttendeeResponse.attendee;
       }
       this.credentials = new MeetingSessionCredentials();
-      this.credentials.attendeeId = createAttendeeResponse.AttendeeId;
-      this.credentials.externalUserId = createAttendeeResponse.ExternalUserId;
-      this.credentials.joinToken = createAttendeeResponse.JoinToken;
+      this.credentials.attendeeId = createAttendeeResponse.attendeeid;
+      this.credentials.externalUserId = createAttendeeResponse.externaluserid;
+      this.credentials.joinToken = createAttendeeResponse.jointoken;
     }
     if (new DefaultBrowserBehavior().screenShareSendsOnlyKeyframes()) {
       this.screenSharingSessionOptions = { bitRate: 384000 };
@@ -171,5 +179,35 @@ export default class MeetingSessionConfiguration {
     this.videoUplinkBandwidthPolicy = new NScaleVideoUplinkBandwidthPolicy(
       this.credentials ? this.credentials.attendeeId : null
     );
+  }
+
+  private toLowerCasePropertyNames(jsonObject: any) { // eslint-disable-line
+    const output = new Map();
+    for (const key in jsonObject) {
+      if (Object.prototype.toString.apply(jsonObject[key]) === '[object Object]') {
+        output.set(key.toLowerCase(), this.toLowerCasePropertyNames(jsonObject[key]));
+      } /* istanbul ignore else */ else if (
+        Object.prototype.toString.apply(jsonObject[key]) === '[object String]'
+      ) {
+        output.set(key.toLowerCase(), jsonObject[key]);
+      }
+    }
+    return output;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private convertMapToObject(map: any): JSON {
+    const obj = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    map.forEach((value: any, key: string) => {
+      if (value instanceof Map) {
+        // @ts-ignore
+        obj[key] = this.convertMapToObject(value);
+      } else {
+        // @ts-ignore
+        obj[key] = value;
+      }
+    });
+    return JSON.parse(JSON.stringify(obj));
   }
 }
